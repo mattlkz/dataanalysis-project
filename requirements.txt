@@ -1,0 +1,42 @@
+1. Schema Design & Ingestion
+
+Raw tables: transactions_raw, users_raw
+Normalized tables: users, wallet_balances, txn_history
+Use PySpark to read CSV/JSON batches and write into MySQL
+
+2 .Feature Engineering
+
+RFM metrics: recency (days since last txn), frequency (txns per week), monetary (avg txn value)
+Behavioral flags: velocity (txns in 1-hour window), category swings (ratio of high-risk merchants)
+Credit signals: avg balance, overdraft events, failed txn count
+Persist as SQL views and Spark DataFrames
+
+3. Model Training & Comparison
+
+Train/test split on historical users (label = defaulted or flagged fraudulent)
+Baseline with logistic regression, then compare to RandomForest and XGBoost
+Survival model (Cox proportional hazards) to predict “time-to-default” for underwriting
+Evaluate with AUC-ROC, Precision@K, Recall, and Concordance Index for survival
+
+4. Risk-Flag Pipeline
+
+Nightly Spark job: score all active users
+Insert high-risk scores into a user_risk MySQL table
+Trigger alerts (e.g. send email/Slack via a simple Python script) to the credit team
+
+5. Dashboard & Reporting
+
+Streamlit app showing:
+Top 20 highest-risk users
+Model performance trends (drift, AUC over time)
+Underwriting recommendations (suggested credit limits)
+Drill-downs by geography, spend category, and device type
+
+6. Deployment & Documentation
+
+Docker Compose for MySQL + Spark + Streamlit
+REST API (POST /score_user) wrapping your best model with Flask
+GitHub repo with:
+ER diagrams
+README explaining business context & setup
+Jupyter notebooks for EDA and feature-build
