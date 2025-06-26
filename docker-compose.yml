@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: walletrisk-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword   # change to something secure
+      MYSQL_DATABASE: walletrisk          # database name auto-created on first run
+      MYSQL_USER: appuser                 # non-root user
+      MYSQL_PASSWORD: apppassword         # change to something secure
+    ports:
+      - "3306:3306"                       # expose container’s 3306 on localhost:3306
+    volumes:
+      - db_data:/var/lib/mysql            # persist data across restarts
+
+volumes:
+  db_data:
